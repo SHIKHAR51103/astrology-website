@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro Shikhar Agarwal - Vedic Astrology & Nadi Jyotish</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sky-blue: #87CEEB;
+            --orange: #FF8C00;
+            --saffron: #FF6600;
+            --light-green: #90EE90;
+            --yellow: #FFD700;
+            --gold: #FFA500;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--sky-blue), var(--light-green), var(--yellow), var(--orange));
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            z-index: -2;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--yellow);
+            border-radius: 50%;
+            animation: floatUp 8s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(100vh) scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(50vh) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) scale(0);
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--orange);
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--saffron);
+        }
+
+        .logout-btn {
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Auth Modal */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--saffron);
+            transform: rotate(90deg);
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            color: white;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--saffron);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--saffron);
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            color: #4caf50;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            color: white;
+            width: 100%;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--dark);
+            border: 2px solid var(--saffron);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Protected Content */
+        .protected-content {
+            display: none;
+        }
+
+        .protected-content.show {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--yellow), var(--light-green), var(--sky-blue), var(--saffron));
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotate 8s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .hero-stats {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem auto;
+            display: inline-block;
+            border: 2px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Sections */
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border-color: var(--saffron);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--saffron);
+        }
+
+        /* Calendar and other styles remain the same as before */
+        .availability-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .availability-info {
+            background: linear-gradient(135deg, var(--yellow), var(--gold));
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 3px solid var(--saffron);
+        }
+
+        .time-slot {
+            background: white;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            border-radius: 10px;
+            border-left: 4px solid var(--saffron);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .slot-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .regular {
+            background: #4caf50;
+            color: #fff;
+        }
+
+        .urgent {
+            background: #ff9800;
+            color: #fff;
+        }
+
+        .emergency {
+            background: #f44336;
+            color: #fff;
+        }
+
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-nav {
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 0.5rem;
+            color: var(--saffron);
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .calendar-day:hover:not(.disabled) {
+            background: linear-gradient(135deg, var(--yellow), var(--gold));
+            border-color: var(--saffron);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.selected {
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            color: white;
+            border-color: var(--saffron);
+        }
+
+        .calendar-day.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slot-selection {
+            margin: 2rem 0;
+        }
+
+        .slot-button {
+            background: white;
+            border: 2px solid var(--gold);
+            padding: 1rem;
+            margin: 0.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .slot-button:hover {
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .slot-button.selected {
+            background: linear-gradient(45deg, var(--saffron), var(--gold));
+            color: white;
+            border-color: var(--saffron);
+        }
+
+        .booking-form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .astrosage-highlight {
+            background: linear-gradient(135deg, var(--yellow), var(--gold));
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            border: 3px solid var(--saffron);
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .price-amount {
+            font-size: 3rem;
+            color: var(--saffron);
+            font-weight: bold;
+        }
+
+        .about-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .experience-grid {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .exp-item {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--yellow), var(--gold));
+            border-radius: 15px;
+            min-width: 200px;
+            border: 3px solid var(--saffron);
+            transition: all 0.3s ease;
+        }
+
+        .exp-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .exp-number {
+            font-size: 3rem;
+            color: var(--saffron);
+            font-weight: bold;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--saffron);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .testimonial-card .stars {
+            color: var(--gold);
+            font-size: 1.3rem;
+        }
+
+        .footer {
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--yellow);
+        }
+
+        .payment-summary {
+            background: linear-gradient(135deg, var(--yellow), var(--gold));
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 3px solid var(--saffron);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .payment-summary h3 {
+            color: var(--saffron);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .price-breakdown {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .price-row.total {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--saffron);
+            border-top: 2px solid var(--saffron);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        .price-label {
+            font-weight: 600;
+        }
+
+        .price-value {
+            font-weight: bold;
+            color: var(--saffron);
+        }
+
+        .payment-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid var(--saffron);
+        }
+
+        .qr-code-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 1rem auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .qr-code-container img {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .upi-id {
+            background: linear-gradient(135deg, var(--yellow), var(--gold));
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .payment-apps {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-grid {
+                gap: 0.3rem;
+            }
+
+            .calendar-day {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-elements" id="floatingElements"></div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal hidden">
+        <div class="auth-container">
+            <button class="close-modal" onclick="closeAuthModal()">×</button>
+            <h2 class="auth-title">Welcome</h2>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email *</label>
+                    <input type="email" id="loginEmail" required>
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password *</label>
+                    <div class="password-toggle">
+                        <input type="password" id="loginPassword" required>
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('loginPassword')">👁️</button>
+                    </div>
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+
+                <span class="error-message" id="loginError"></span>
+                <button type="submit" class="btn btn-primary" id="loginBtn">Login</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="registerName">Full Name *</label>
+                    <input type="text" id="registerName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">Email *</label>
+                    <input type="email" id="registerEmail" required>
+                    <span class="error-message" id="registerEmailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Password *</label>
+                    <div class="password-toggle">
+                        <input type="password" id="registerPassword" required minlength="6">
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('registerPassword')">👁️</button>
+                    </div>
+                    <small>Minimum 6 characters</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirm Password *</label>
+                    <div class="password-toggle">
+                        <input type="password" id="registerConfirmPassword" required>
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('registerConfirmPassword')">👁️</button>
+                    </div>
+                    <span class="error-message" id="registerPasswordError"></span>
+                </div>
+
+                <span class="success-message" id="registerSuccess"></span>
+                <span class="error-message" id="registerError"></span>
+                <button type="submit" class="btn btn-primary" id="registerBtn">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🕉️ Astro Shikhar</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#booking" class="protected-link">Book Slot</a></li>
+                <li><a href="#about">About</a></li>
+                <li id="authLink"><a href="#" onclick="openAuthModal()">Login / Register</a></li>
+                <li id="userInfo" class="user-info hidden">
+                    <span class="user-name" id="userName"></span>
+                    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="avatar">🕉️</div>
+            <h1>Astro Shikhar Agarwal</h1>
+            <p>Vedic Astrologer, Nadi Jyotish & Muhurta Expert</p>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">Illuminate Your Path Through Ancient Wisdom</p>
+            
+            <div class="cta-buttons">
+                <a href="https://astrosage.com/varta/astrologer/astro-shikhar-a" target="_blank" class="btn btn-primary">
+                    🔮 Consult on AstroSage
+                </a>
+                <a href="#booking" class="btn btn-secondary protected-link" onclick="checkAuth(event)">
+                    📅 Book Your Slot
+                </a>
+            </div>
+            
+            <div class="hero-stats">
+                <p style="margin: 0.5rem 0;">⭐ 5.0 Rating on AstroSage</p>
+                <p style="margin: 0.5rem 0;">👥 23 Followers</p>
+                <p style="margin: 0.5rem 0;">💬 Hindi & English</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section" id="services">
+        <div class="container">
+            <h2 class="section-title">Our Sacred Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🔮</div>
+                    <h3>Vedic Astrology</h3>
+                    <p>Comprehensive birth chart analysis, planetary positions, dashas, and personalized predictions based on ancient Vedic principles.</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">📜</div>
+                    <h3>Nadi Jyotish</h3>
+                    <p>Ancient palm leaf astrology revealing your soul's journey and karmic patterns with profound insights.</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🕉️</div>
+                    <h3>Muhurta</h3>
+                    <p>Auspicious timing selection for important life events - marriage, business launch, and ceremonies.</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">💍</div>
+                    <h3>Kundali Matching</h3>
+                    <p>Traditional compatibility analysis for marriage with Guna Milan and planetary positions.</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🌟</div>
+                    <h3>Career & Life Guidance</h3>
+                    <p>Discover your ideal path through astrological analysis and timing for important decisions.</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🙏</div>
+                    <h3>Remedial Solutions</h3>
+                    <p>Personalized gemstone recommendations, mantra suggestions, and Vedic remedies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section (Protected) -->
+    <section class="section protected-content" id="booking">
+        <div class="container">
+            <h2 class="section-title">Book Your Consultation</h2>
+            
+            <div class="availability-section">
+                <div class="availability-info">
+                    <h3 style="color: var(--saffron); margin-bottom: 1rem; text-align: center;">📅 My Availability Schedule</h3>
+                    
+                    <h4 style="color: var(--dark); margin: 1.5rem 0 1rem 0;">🎯 Weekends (Saturday & Sunday)</h4>
+                    <div class="time-slot">
+                        <span><strong>11:00 AM - 2:00 PM</strong></span>
+                        <span class="slot-type regular">Regular Session</span>
+                    </div>
+                    <div class="time-slot">
+                        <span><strong>4:00 PM - 5:30 PM</strong></span>
+                        <span class="slot-type regular">Regular Session</span>
+                    </div>
+                    <div class="time-slot">
+                        <span><strong>7:00 PM - 8:00 PM</strong></span>
+                        <span class="slot-type regular">Regular Session</span>
+                    </div>
+                    <div class="time-slot">
+                        <span><strong>9:30 PM - 10:30 PM</strong></span>
+                        <span class="slot-type emergency">Emergency Only</span>
+                    </div>
+
+                    <h4 style="color: var(--dark); margin: 1.5rem 0 1rem 0;">💼 Weekdays (Monday - Friday)</h4>
+                    <div class="time-slot">
+                        <span><strong>7:00 PM - 8:00 PM</strong></span>
+                        <span class="slot-type urgent">Urgent (+₹100)</span>
+                    </div>
+                    <div class="time-slot">
+                        <span><strong>9:30 PM - 10:30 PM</strong></span>
+                        <span class="slot-type emergency">Emergency Only</span>
+                    </div>
+                </div>
+
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" onclick="previousMonth()">◀ Previous</button>
+                        <h3 id="currentMonth" style="color: var(--saffron);"></h3>
+                        <button class="calendar-nav" onclick="nextMonth()">Next ▶</button>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendarDays"></div>
+                </div>
+
+                <div class="slot-selection" id="slotSelection" style="display: none;">
+                    <h3 style="color: var(--saffron); margin-bottom: 1rem; text-align: center;">Select Your Time Slot</h3>
+                    <div id="availableSlots" style="text-align: center;"></div>
+                </div>
+
+                <form id="bookingForm" class="booking-form" style="display: none;" onsubmit="handleBooking(event)">
+                    <h3 style="color: var(--saffron); margin-bottom: 2rem; text-align: center;">Complete Your Booking</h3>
+                    
+                    <div class="form-group">
+                        <label>Selected Date & Time</label>
+                        <input type="text" id="selectedDateTime" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookingName">Full Name *</label>
+                        <input type="text" id="bookingName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookingEmail">Email *</label>
+                        <input type="email" id="bookingEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookingPhone">Phone Number *</label>
+                        <input type="tel" id="bookingPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ageCategory">Age Category *</label>
+                        <select id="ageCategory" required onchange="calculateTotal()">
+                            <option value="">Select category</option>
+                            <option value="student">Student (with valid ID)</option>
+                            <option value="elder">Elder/Working Professional</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="consultationDuration">Consultation Duration *</label>
+                        <select id="consultationDuration" required onchange="calculateTotal()">
+                            <option value="">Select duration</option>
+                            <option value="15min">15 Minutes</option>
+                            <option value="30min">30 Minutes</option>
+                            <option value="1hour">1 Hour</option>
+                        </select>
+                    </div>
+
+                    <!-- Payment Summary Section -->
+                    <div id="paymentSummary" class="payment-summary" style="display: none;">
+                        <h3>💰 Payment Summary</h3>
+                        <div class="price-breakdown">
+                            <div class="price-row">
+                                <span class="price-label">Consultation Type:</span>
+                                <span id="consultationType">-</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Duration:</span>
+                                <span id="durationDisplay">-</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Category:</span>
+                                <span id="categoryDisplay">-</span>
+                            </div>
+                            <div class="price-row" id="urgentChargeRow" style="display: none;">
+                                <span class="price-label">Urgent Slot Charge:</span>
+                                <span class="price-value">+ ₹100</span>
+                            </div>
+                            <div class="price-row total">
+                                <span class="price-label">Total Amount:</span>
+                                <span class="price-value" id="totalAmount">₹0</span>
+                            </div>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--dark);">
+                            💡 Please pay this amount using the QR code below after booking
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob">Date of Birth *</label>
+                        <input type="date" id="dob" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthtime">Time of Birth</label>
+                        <input type="time" id="birthtime">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthplace">Place of Birth *</label>
+                        <input type="text" id="birthplace" placeholder="City, State" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service">Service Required *</label>
+                        <select id="service" required>
+                            <option value="">Select a service</option>
+                            <option value="vedic">Vedic Astrology</option>
+                            <option value="nadi">Nadi Jyotish</option>
+                            <option value="muhurta">Muhurta</option>
+                            <option value="matchmaking">Kundali Matching</option>
+                            <option value="career">Career Guidance</option>
+                            <option value="remedial">Remedial Solutions</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Your Query</label>
+                        <textarea id="message" rows="4"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">📧 Confirm Booking via Email</button>
+                    
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 215, 0, 0.1); border-radius: 15px; border: 2px solid var(--gold);">
+                        <h4 style="color: var(--saffron); margin-bottom: 1rem;">💳 Payment Information</h4>
+                        <p style="margin-bottom: 1rem;">After submitting your booking, please complete the payment using the QR code below:</p>
+                        <p style="font-weight: bold; color: var(--dark);">Scroll down to view payment options 👇</p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="payment-section" id="paymentSection">
+                <h3 style="color: var(--saffron); margin-bottom: 1rem;">💰 Complete Your Payment</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 2rem;">Scan the QR code below to pay via UPI</p>
+                
+                <div class="qr-code-container">
+                    <img src="https://i.ibb.co/NYrGcKd/paytm-qr.png" alt="PayTM UPI QR Code" onerror="this.style.display='none'; document.getElementById('qrFallback').style.display='block';">
+                    <div id="qrFallback" style="display: none;">
+                        <p style="color: var(--saffron); font-weight: bold; margin: 2rem 0;">📱 Scan QR Code to Pay</p>
+                        <p>UPI ID: 7599781938@ptsbi</p>
+                    </div>
+                </div>
+                
+                <div class="upi-id">
+                    📲 UPI ID: 7599781938@ptsbi
+                </div>
+                
+                <p style="margin: 1rem 0; font-size: 1.1rem;">Accepted Payment Apps:</p>
+                <div class="payment-apps">
+                    <span style="padding: 0.5rem 1rem; background: white; border-radius: 10px; font-weight: bold;">PayTM</span>
+                    <span style="padding: 0.5rem 1rem; background: white; border-radius: 10px; font-weight: bold;">Google Pay</span>
+                    <span style="padding: 0.5rem 1rem; background: white; border-radius: 10px; font-weight: bold;">PhonePe</span>
+                    <span style="padding: 0.5rem 1rem; background: white; border-radius: 10px; font-weight: bold;">BHIM</span>
+                </div>
+                
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 1.5rem; border-radius: 10px; margin-top: 2rem; border-left: 4px solid #4caf50;">
+                    <h4 style="color: #4caf50; margin-bottom: 0.5rem;">✅ After Payment:</h4>
+                    <p>1. Take a screenshot of payment confirmation</p>
+                    <p>2. Send it via WhatsApp: <strong>+91-7599781938</strong></p>
+                    <p>3. Or email: <strong>shikhar51103@gmail.com</strong></p>
+                    <p style="margin-top: 1rem; font-weight: bold;">Your booking will be confirmed within 2 hours!</p>
+                </div>
+            </div>
+
+            <!-- AstroSage CTA -->
+            <div class="astrosage-highlight">
+                <h3 style="color: var(--saffron); margin-bottom: 1rem;">🌟 Instant Consultation on AstroSage</h3>
+                <div class="price-amount">₹19/min</div>
+                <p style="margin: 1rem 0; font-size: 1.1rem;">Call or Chat Now • Pay As You Go</p>
+                <a href="https://astrosage.com/varta/astrologer/astro-shikhar-a" target="_blank" class="btn btn-primary" style="font-size: 1.2rem;">
+                    📱 Connect on AstroSage Varta
+                </a>
+                <p style="margin-top: 1.5rem; font-size: 0.95rem; opacity: 0.9;">
+                    💡 <strong>Or book a scheduled slot above and pay via UPI QR code</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <h2 class="section-title">About Astro Shikhar</h2>
+            <div class="about-section">
+                <p style="text-align: center; font-size: 1.2rem; margin-bottom: 2rem;">
+                    Namaste! I am Astro Shikhar Agarwal, a distinguished spiritual advisor and astrologer with deep expertise in Vedic Astrology, Nadi Jyotish, and Muhurta. With several years of professional experience, I have guided numerous individuals through important life decisions.
+                </p>
+
+                <div class="experience-grid">
+                    <div class="exp-item">
+                        <div class="exp-number">5+</div>
+                        <p style="font-weight: 600;">Years Experience</p>
+                    </div>
+                    <div class="exp-item">
+                        <div class="exp-number">5.0</div>
+                        <p style="font-weight: 600;">AstroSage Rating</p>
+                    </div>
+                    <div class="exp-item">
+                        <div class="exp-number">500+</div>
+                        <p style="font-weight: 600;">Happy Clients</p>
+                    </div>
+                </div>
+
+                <p style="text-align: center; margin-top: 2rem; font-size: 1.1rem;">
+                    My approach blends classical Vedic astrology with the precision of Nadi Jyotish and the timing accuracy of Muhurta. I am fluent in Hindi and English, ensuring clear communication of complex astrological concepts.
+                </p>
+            </div>
+
+            <!-- Testimonials -->
+            <h3 class="section-title" style="margin-top: 4rem;">What Clients Say</h3>
+            <div class="testimonial-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p style="margin: 1rem 0; font-style: italic;">"Astro Shikhar ji's predictions were incredibly accurate. His guidance helped me make important career decisions at the right time. Highly recommended!"</p>
+                <p style="color: var(--saffron); font-weight: 600;">- Priya Sharma</p>
+            </div>
+            <div class="testimonial-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p style="margin: 1rem 0; font-style: italic;">"The Kundali matching service was thorough. Astro ji's knowledge of Vedic astrology and Nadi Jyotish is exceptional!"</p>
+                <p style="color: var(--saffron); font-weight: 600;">- Rajesh & Meera Gupta</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p style="font-size: 1.3rem; margin-bottom: 1rem;">🕉️ May the Divine Light Guide Your Journey 🕉️</p>
+        <p>&copy; 2024 Astro Shikhar Agarwal</p>
+        <p style="margin-top: 1rem;">📧 shikhar51103@gmail.com | 📱 +91-7599781938</p>
+        <p style="margin-top: 1rem;">
+            <a href="https://astrosage.com/varta/astrologer/astro-shikhar-a" target="_blank">
+                🌟 Connect on AstroSage Varta
+            </a>
+        </p>
+    </footer>
+
+    <script>
+        // Authentication System
+        const AUTH_STORAGE_KEY = 'astro_users';
+        const SESSION_KEY = 'astro_session';
+        const MAX_LOGIN_ATTEMPTS = 3;
+        const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
+
+        // Initialize
+        let loginAttempts = {};
+        let currentUser = null;
+
+        // Check if user is logged in on page load
+        window.addEventListener('load', function() {
+            checkSession();
+            createFloatingElements();
+            renderCalendar();
+        });
+
+        // Prevent back button after logout
+        window.addEventListener('popstate', function(event) {
+            if (!currentUser) {
+                history.pushState(null, null, location.href);
+            }
+        });
+
+        function checkSession() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (session) {
+                const sessionData = JSON.parse(session);
+                const now = new Date().getTime();
+                
+                // Check if session is still valid (30 minutes)
+                if (now - sessionData.timestamp < 30 * 60 * 1000) {
+                    currentUser = sessionData.user;
+                    updateUIForLoggedInUser();
+                } else {
+                    handleLogout();
+                }
+            }
+        }
+
+        function updateUIForLoggedInUser() {
+            document.getElementById('authLink').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userName').textContent = currentUser.name;
+            
+            // Show protected content
+            document.querySelectorAll('.protected-content').forEach(el => {
+                el.classList.add('show');
+            });
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+            resetForms();
+        }
+
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.auth-tab');
+            const forms = document.querySelectorAll('.auth-form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+            
+            resetForms();
+        }
+
+        function resetForms() {
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.success-message').forEach(el => el.classList.remove('show'));
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            
+            // Check if account is locked
+            if (loginAttempts[email] && loginAttempts[email].locked) {
+                const now = new Date().getTime();
+                if (now - loginAttempts[email].lockTime < LOCKOUT_TIME) {
+                    const remainingTime = Math.ceil((LOCKOUT_TIME - (now - loginAttempts[email].lockTime)) / 60000);
+                    showError('loginError', `Account locked. Try again in ${remainingTime} minutes.`);
+                    return;
+                } else {
+                    loginAttempts[email] = { count: 0, locked: false };
+                }
+            }
+            
+            // Validate inputs
+            if (!email || !password) {
+                showError('loginError', 'Please fill in all fields');
+                return;
+            }
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || '[]');
+            const user = users.find(u => u.email.toLowerCase() === email);
+            
+            if (!user || user.password !== password) {
+                // Track failed attempts
+                if (!loginAttempts[email]) {
+                    loginAttempts[email] = { count: 0, locked: false };
+                }
+                loginAttempts[email].count++;
+                
+                if (loginAttempts[email].count >= MAX_LOGIN_ATTEMPTS) {
+                    loginAttempts[email].locked = true;
+                    loginAttempts[email].lockTime = new Date().getTime();
+                    showError('loginError', 'Too many failed attempts. Account locked for 15 minutes.');
+                } else {
+                    const remaining = MAX_LOGIN_ATTEMPTS - loginAttempts[email].count;
+                    showError('loginError', `Incorrect email or password. ${remaining} attempts remaining.`);
+                }
+                return;
+            }
+            
+            // Successful login
+            loginAttempts[email] = { count: 0, locked: false };
+            currentUser = { name: user.name, email: user.email };
+            
+            // Create session
+            const sessionData = {
+                user: currentUser,
+                timestamp: new Date().getTime()
+            };
+            localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+            
+            // Update UI
+            updateUIForLoggedInUser();
+            closeAuthModal();
+            
+            // Prefill booking form
+            document.getElementById('bookingName').value = user.name;
+            document.getElementById('bookingEmail').value = user.email;
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            // Validate inputs
+            if (!name || !email || !password || !confirmPassword) {
+                showError('registerError', 'Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('registerPasswordError', 'Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('registerPasswordError', 'Password must be at least 6 characters');
+                return;
+            }
+            
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || '[]');
+            if (users.find(u => u.email.toLowerCase() === email)) {
+                showError('registerEmailError', 'Email already registered');
+                return;
+            }
+            
+            // Register user
+            const newUser = { name, email, password, registeredAt: new Date().toISOString() };
+            users.push(newUser);
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(users));
+            
+            // Send welcome email (simulated)
+            sendWelcomeEmail(name, email);
+            
+            // Show success message
+            showSuccess('registerSuccess', 'Registration successful! Please login to continue.');
+            
+            // Switch to login tab after 2 seconds
+            setTimeout(() => {
+                switchTab('login');
+                document.getElementById('loginEmail').value = email;
+            }, 2000);
+        }
+
+        function sendWelcomeEmail(name, email) {
+            const emailBody = `
+Dear ${name},
+
+Namaste! 🕉️
+
+Thank you for registering at Astro Shikhar Agarwal - Vedic Astrology & Nadi Jyotish.
+
+Your account has been successfully created with the email: ${email}
+
+You can now:
+✅ Book personalized consultation slots
+✅ Access exclusive astrology services
+✅ Get guidance from our expert astrologer
+
+Services we offer:
+🔮 Vedic Astrology
+📜 Nadi Jyotish
+🕉️ Muhurta (Auspicious Timing)
+💍 Kundali Matching
+🌟 Career & Life Guidance
+🙏 Remedial Solutions
+
+To get started, simply login and explore our services.
+
+For instant consultation, visit: https://astrosage.com/varta/astrologer/astro-shikhar-a
+
+May the divine light guide your journey!
+
+Best Regards,
+Astro Shikhar Agarwal
+📧 shikhar51103@gmail.com
+📱 +91-7599781938
+            `.trim();
+
+            // Send email using SMTP.js
+            Email.send({
+                SecureToken: "YOUR_SECURE_TOKEN_HERE", // Get from Elastic Email
+                To: email,
+                From: "shikhar51103@gmail.com",
+                Subject: "Welcome to Astro Shikhar Agarwal - Registration Successful",
+                Body: emailBody
+            }).then(
+                message => {
+                    console.log('Email sent successfully:', message);
+                    if (message === 'OK') {
+                        console.log('Welcome email delivered to:', email);
+                    }
+                }
+            ).catch(
+                error => {
+                    console.error('Email sending failed:', error);
+                    // Fallback: Open mailto
+                    const subject = 'Welcome to Astro Shikhar Agarwal - Registration Successful';
+                    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+                }
+            );
+        }
+
+        function handleLogout() {
+            localStorage.removeItem(SESSION_KEY);
+            currentUser = null;
+            
+            document.getElementById('authLink').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+            
+            // Hide protected content
+            document.querySelectorAll('.protected-content').forEach(el => {
+                el.classList.remove('show');
+            });
+            
+            // Prevent going back to logged-in pages
+            history.pushState(null, null, location.href);
+            window.scrollTo(0, 0);
+        }
+
+        function checkAuth(event) {
+            if (!currentUser) {
+                event.preventDefault();
+                openAuthModal();
+            }
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.add('show');
+        }
+
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.add('show');
+        }
+
+        // Calendar and booking functionality
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedSlot = null;
+
+        const weekendSlots = [
+            { time: "11:00 AM - 2:00 PM", type: "regular", label: "Morning Session", slotType: "regular" },
+            { time: "4:00 PM - 5:30 PM", type: "regular", label: "Evening Session", slotType: "regular" },
+            { time: "7:00 PM - 8:00 PM", type: "regular", label: "Night Session", slotType: "regular" },
+            { time: "9:30 PM - 10:30 PM", type: "emergency", label: "Emergency Only", slotType: "emergency" }
+        ];
+
+        const weekdaySlots = [
+            { time: "7:00 PM - 8:00 PM", type: "urgent", label: "Urgent (+₹100)", slotType: "urgent" },
+            { time: "9:30 PM - 10:30 PM", type: "emergency", label: "Emergency Only", slotType: "emergency" }
+        ];
+
+        // Pricing structure
+        const pricing = {
+            "15min": {
+                student: 251,
+                elder: 500
+            },
+            "30min": {
+                student: 500,
+                elder: 1051
+            },
+            "1hour": {
+                student: 2051,
+                elder: 2051
+            }
+        };
+
+        function calculateTotal() {
+            const ageCategory = document.getElementById('ageCategory').value;
+            const duration = document.getElementById('consultationDuration').value;
+            
+            if (!ageCategory || !duration) {
+                document.getElementById('paymentSummary').style.display = 'none';
+                return;
+            }
+
+            // Get base price
+            let basePrice = pricing[duration][ageCategory];
+            let urgentCharge = 0;
+
+            // Check if it's an urgent slot (weekday 7-8 PM)
+            if (selectedSlot && selectedSlot.slotType === 'urgent') {
+                urgentCharge = 100;
+            }
+
+            const totalAmount = basePrice + urgentCharge;
+
+            // Update display
+            document.getElementById('consultationType').textContent = selectedSlot ? selectedSlot.label : '-';
+            
+            const durationText = {
+                '15min': '15 Minutes',
+                '30min': '30 Minutes',
+                '1hour': '1 Hour'
+            };
+            document.getElementById('durationDisplay').textContent = durationText[duration];
+            
+            const categoryText = ageCategory === 'student' ? 'Student' : 'Elder/Working Professional';
+            document.getElementById('categoryDisplay').textContent = categoryText;
+            
+            // Show/hide urgent charge
+            const urgentChargeRow = document.getElementById('urgentChargeRow');
+            if (urgentCharge > 0) {
+                urgentChargeRow.style.display = 'flex';
+            } else {
+                urgentChargeRow.style.display = 'none';
+            }
+
+            document.getElementById('totalAmount').textContent = '₹' + totalAmount;
+            document.getElementById('paymentSummary').style.display = 'block';
+            
+            // Scroll to payment summary
+            document.getElementById('paymentSummary').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('currentMonth').textContent = 
+                currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                calendarDays.appendChild(emptyDay);
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                const dateToCheck = new Date(year, month, day);
+                
+                if (dateToCheck < today) {
+                    dayElement.classList.add('disabled');
+                } else {
+                    dayElement.onclick = () => selectDate(year, month, day, dayElement);
+                }
+                
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        function selectDate(year, month, day, element) {
+            selectedDate = new Date(year, month, day);
+            
+            document.querySelectorAll('.calendar-day').forEach(el => {
+                el.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            showAvailableSlots();
+        }
+
+        function showAvailableSlots() {
+            const dayOfWeek = selectedDate.getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            
+            const slots = isWeekend ? weekendSlots : weekdaySlots;
+            
+            const slotSelection = document.getElementById('slotSelection');
+            const availableSlots = document.getElementById('availableSlots');
+            
+            slotSelection.style.display = 'block';
+            availableSlots.innerHTML = '';
+            
+            slots.forEach(slot => {
+                const slotButton = document.createElement('div');
+                slotButton.className = 'slot-button';
+                slotButton.innerHTML = `
+                    <strong>${slot.time}</strong><br>
+                    <span class="slot-type ${slot.type}">${slot.label}</span>
+                `;
+                slotButton.onclick = () => selectSlot(slot, slotButton);
+                availableSlots.appendChild(slotButton);
+            });
+            
+            slotSelection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function selectSlot(slot, element) {
+            selectedSlot = slot;
+            
+            document.querySelectorAll('.slot-button').forEach(el => {
+                el.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            const dateStr = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('selectedDateTime').value = 
+                `${dateStr} at ${slot.time} (${slot.label})`;
+            
+            document.getElementById('bookingForm').style.display = 'block';
+            document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function handleBooking(event) {
+            event.preventDefault();
+            
+            const ageCategory = document.getElementById('ageCategory').value;
+            const duration = document.getElementById('consultationDuration').value;
+            
+            // Calculate final amount
+            let basePrice = pricing[duration][ageCategory];
+            let urgentCharge = 0;
+            
+            if (selectedSlot && selectedSlot.slotType === 'urgent') {
+                urgentCharge = 100;
+            }
+            
+            const totalAmount = basePrice + urgentCharge;
+            
+            const formData = {
+                dateTime: document.getElementById('selectedDateTime').value,
+                name: document.getElementById('bookingName').value,
+                email: document.getElementById('bookingEmail').value,
+                phone: document.getElementById('bookingPhone').value,
+                ageCategory: ageCategory === 'student' ? 'Student' : 'Elder/Working Professional',
+                duration: duration === '15min' ? '15 Minutes' : duration === '30min' ? '30 Minutes' : '1 Hour',
+                totalAmount: totalAmount,
+                urgentCharge: urgentCharge,
+                dob: document.getElementById('dob').value,
+                birthtime: document.getElementById('birthtime').value,
+                birthplace: document.getElementById('birthplace').value,
+                service: document.getElementById('service').value,
+                message: document.getElementById('message').value
+            };
+            
+            const emailBody = `
+Consultation Booking Request
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 Appointment Details:
+${formData.dateTime}
+
+💰 Payment Information:
+Duration: ${formData.duration}
+Category: ${formData.ageCategory}
+${urgentCharge > 0 ? `Urgent Slot Charge: +₹${urgentCharge}\n` : ''}TOTAL AMOUNT: ₹${formData.totalAmount}
+
+👤 Personal Information:
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+
+🕉️ Birth Details:
+Date of Birth: ${formData.dob}
+Time of Birth: ${formData.birthtime || 'Not provided'}
+Place of Birth: ${formData.birthplace}
+
+📋 Service Required:
+${formData.service}
+
+💬 Query/Concerns:
+${formData.message || 'No specific query mentioned'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+PAYMENT INSTRUCTIONS:
+Please pay ₹${formData.totalAmount} via UPI QR code
+After payment, send screenshot to:
+WhatsApp: +91-7599781938
+Email: shikhar51103@gmail.com
+
+Regards,
+${formData.name}
+            `.trim();
+            
+            const mailtoLink = `mailto:shikhar51103@gmail.com?subject=Consultation Booking - ${formData.name} - ₹${formData.totalAmount}&body=${encodeURIComponent(emailBody)}`;
+            
+            window.location.href = mailtoLink;
+            
+            setTimeout(() => {
+                alert(`Your email client should open now.\n\nTotal Amount to Pay: ₹${formData.totalAmount}\n\nPlease send the email to confirm your booking, then scroll down to pay via QR code! 🙏`);
+            }, 500);
+        }
+
+        function createFloatingElements() {
+            const floatingContainer = document.getElementById('floatingElements');
+            for (let i = 0; i < 20; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 8 + 's';
+                element.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                floatingContainer.appendChild(element);
+            }
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target && !this.classList.contains('protected-link')) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
